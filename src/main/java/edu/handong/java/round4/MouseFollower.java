@@ -25,7 +25,7 @@ public class MouseFollower extends MouseAdapter implements MouseListener {
 			panel.main.addImage = null;
 			BufferedImage bi= panel.main.loadImage;
 			panel.main.followImage = new BufferedImage(bi.getColorModel(), bi.copyData(null), bi.isAlphaPremultiplied(), null);
-			panel.main.function = MainFrame.DEFAULT;
+			panel.main.function = MainFrame.OPEN;
 		}
 	}
 
@@ -46,6 +46,9 @@ public class MouseFollower extends MouseAdapter implements MouseListener {
 		if(panel.function == MainFrame.ADDIMAGE) {
 			panel.mouseX = e.getX();
 			panel.mouseY = e.getY();
+		}
+		else if(panel.function == MainFrame.MAGNIFY) {
+			
 		}
 	}
 

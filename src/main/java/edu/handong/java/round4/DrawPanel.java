@@ -29,42 +29,38 @@ class DrawPanel extends JPanel {
 		
 		function = main.function;
 		
-		int x=0, y=0;
-		if(image != null) {
+		if(image == null) return;
+		else if(function == MainFrame.OPEN) {
+			int x=0, y=0;
 			x = image.getWidth();
 			y = image.getHeight();
+
+			int newX = x-711;
+			int newY = y-615;
+			if(x > 711 && y > 615) {
+				this.setSize(711+newX, 615+newY);
+				main.frame.setSize(847+newX, 649+newY);
+			}
+			else if(x > this.getWidth()) {
+				this.setBounds(130, 6, 711+newX, 615);
+				main.frame.setBounds(0, 10, 847+newX, 649);
+			}
+			else if(y > this.getHeight()) {
+				this.setBounds(130, 6, 711, 615+newY);
+				main.frame.setBounds(0, 10, 847, 649+newY);
+			}
+			else {
+				this.setSize(711, 615);
+				main.frame.setSize(847, 649);
+
+			}
 		}
-		
-		int newX = x-711;
-		int newY = y-615;
-		if(x > 711 && y > 615) {
-			this.setSize(711+newX, 615+newY);
-			main.frame.setSize(847+newX, 649+newY);
-			main.frame.repaint();
-		}
-		else if(x > this.getWidth()) {
-			this.setBounds(130, 6, 711+newX, 615);
-			main.frame.setBounds(0, 10, 847+newX, 649);
-			main.frame.repaint();
-		}
-		else if(y > this.getHeight()) {
-			this.setBounds(130, 6, 711, 615+newY);
-			main.frame.setBounds(0, 10, 847, 649+newY);
-			main.frame.repaint();
-		}
-		else {
-			this.setSize(711, 615);
-			main.frame.setSize(847, 649);
-			main.frame.repaint();
-			
-		}
-		
-		if(addImage != null){
-			main.loadImage = main.followImage.getSubimage(0, 0, main.followImage.getWidth()-150, main.followImage.getHeight());
+		else if(function == MainFrame.ADDIMAGE) {
 			main.changeImage(mouseX, mouseY);
+			this.repaint();
 		}
-		g.drawImage(image, 0, 0, this);
 		
+		g.drawImage(image, 0, 0, this);
 	}
 	
 	public void setImage(BufferedImage img) {

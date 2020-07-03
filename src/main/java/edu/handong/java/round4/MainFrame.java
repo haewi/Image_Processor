@@ -28,7 +28,9 @@ public class MainFrame {
 	MainFrame main = this;
 	
 	public static final int DEFAULT = 1;
-	public static final int ADDIMAGE = 2;
+	public static final int OPEN = 2;
+	public static final int ADDIMAGE = 3;
+	public static final int MAGNIFY = 4;
 	
 	int function = DEFAULT;
 	
@@ -87,13 +89,14 @@ public class MainFrame {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fileChoose = new JFileChooser();
 				fileChoose.setCurrentDirectory(new File("/Users/yeahn/Desktop/2020-Summer/Image_Processor/image"));
-				FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & GIF Images", "jpg", "gif");
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & GIF Images", "jpg", "gif", "png");
 				fileChoose.setFileFilter(filter);
 				fileChoose.showOpenDialog(null);
 				if(fileChoose.getSelectedFile() != null) {
 					File file = fileChoose.getSelectedFile();
 					fileName = file.getName();
 					openFile(file);
+					function=OPEN;
 				}
 			}
 		});
@@ -116,12 +119,13 @@ public class MainFrame {
 				
 				JFileChooser fileChoose = new JFileChooser();
 				fileChoose.setCurrentDirectory(new File("/Users/yeahn/Desktop/2020-Summer/Image_Processor/image"));
-				FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & GIF Images", "jpg", "gif");
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & GIF Images", "jpg", "gif", "png");
 				fileChoose.setFileFilter(filter);
 				fileChoose.showOpenDialog(null);
 				if(fileChoose.getSelectedFile() != null) {
 					File file = fileChoose.getSelectedFile();
-					function = ADDIMAGE;
+					if(function == DEFAULT) return; 
+					else function = ADDIMAGE;
 					openAddImage(file);
 				}
 			}
@@ -142,7 +146,8 @@ public class MainFrame {
 		JButton magnifier = new JButton("Magnify");
 		magnifier.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Magnify");
+				if(function == MAGNIFY) function = OPEN;
+				else function = MAGNIFY;
 			}
 		});
 		magnifier.setBounds(9, 241, 97, 47);
@@ -270,7 +275,7 @@ public class MainFrame {
 					}
 				}
 			}
-			
+//			System.out.println(function);
 			imagePanel.setImage(loadImage);
 			
 			// 배경색과 같은 색이라도 이미지 안이면 유지하게 하기....실패ㅠㅠ
