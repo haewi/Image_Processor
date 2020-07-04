@@ -29,8 +29,11 @@ public class MainFrame {
 	
 	public static final int DEFAULT = 1;
 	public static final int OPEN = 2;
-	public static final int ADDIMAGE = 3;
-	public static final int MAGNIFY = 4;
+	public static final int GRAY = 3;
+	public static final int ADDIMAGE = 4;
+	public static final int MAGNIFY = 5;
+	
+	int gf=0;
 	
 	int function = DEFAULT;
 	
@@ -108,7 +111,14 @@ public class MainFrame {
 		filter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(loadImage == null) return;
-				grayFilter();
+				
+				if(function==GRAY) {
+					gf = 0;
+				}
+				else {
+					grayFilter();
+					gf = GRAY;
+				}
 			}
 		});
 		panel.add(filter);
@@ -146,8 +156,10 @@ public class MainFrame {
 		JButton magnifier = new JButton("Magnify");
 		magnifier.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(function == MAGNIFY) function = OPEN;
+				if(function == DEFAULT) return;
+				else if(function == MAGNIFY) function = OPEN;
 				else function = MAGNIFY;
+				imagePanel.repaint();
 			}
 		});
 		magnifier.setBounds(9, 241, 97, 47);
@@ -161,6 +173,7 @@ public class MainFrame {
 				super.mousePressed(e);
 				if(originalImage == null) return;
 				imagePanel.setImage(originalImage);
+				imagePanel.repaint();
 			}
 
 			@Override
@@ -168,15 +181,24 @@ public class MainFrame {
 				super.mouseReleased(e);
 				if(loadImage == null) return;
 				imagePanel.setImage(loadImage);
+				imagePanel.repaint();
 			}
 			
 		});
 		before.setBounds(9, 300, 97, 47);
 		panel.add(before);
 		
-		JButton save_3 = new JButton("Save");
-		save_3.setBounds(9, 359, 97, 47);
-		panel.add(save_3);
+		JButton original = new JButton("Original");
+		original.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadImage = new BufferedImage(originalImage.getColorModel(), originalImage.copyData(null), originalImage.isAlphaPremultiplied(), null);
+				followImage = new BufferedImage(originalImage.getColorModel(), originalImage.copyData(null), originalImage.isAlphaPremultiplied(), null);
+				imagePanel.setImage(loadImage);
+				imagePanel.repaint();
+			}
+		});
+		original.setBounds(9, 359, 97, 47);
+		panel.add(original);
 		
 		JButton save_4 = new JButton("Save");
 		save_4.setBounds(9, 418, 97, 47);
@@ -236,15 +258,19 @@ public class MainFrame {
 	}
 	
 	private void grayFilter() {
+		
 		for(int y = 0; y < loadImage.getHeight(); y++) {
 			for(int x = 0; x < loadImage.getWidth(); x++) {
 				Color colour = new Color(loadImage.getRGB(x, y));
+//				System.out.println(colour.getRed() + " " + colour.getGreen() + " " + colour.getBlue());
 //				Choose one from below
 //				int Y = (int) (0.299 * colour.getRed() + 0.587 * colour.getGreen() + 0.114 * colour.getBlue());
 				int Y = (int) (0.2126 * colour.getRed() + 0.7152 * colour.getGreen() + 0.0722 * colour.getBlue());
 				loadImage.setRGB(x, y, new Color(Y, Y, Y).getRGB());
 			}
 		}
+		followImage = new BufferedImage(loadImage.getColorModel(), loadImage.copyData(null), loadImage.isAlphaPremultiplied(), null);
+		imagePanel.repaint();
 	}
 	
 	public void changeBrightness(int bright) {
@@ -260,6 +286,7 @@ public class MainFrame {
 				loadImage.setRGB(x, y, new Color(r, g, b).getRGB());
 			}
 		}
+		imagePanel.repaint();
 	}
 	
 	public void changeImage(int mouseX, int mouseY) {
@@ -308,8 +335,8 @@ public class MainFrame {
 		}
 	}
 	
-	public void setFunction(int f) {
-		function = f;
+	public void moveMagnifier(int mouseX, int mouseY) {
+		
 	}
 	
 }

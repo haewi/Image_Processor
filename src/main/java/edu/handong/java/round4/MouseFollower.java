@@ -48,7 +48,8 @@ public class MouseFollower extends MouseAdapter implements MouseListener {
 			panel.mouseY = e.getY();
 		}
 		else if(panel.function == MainFrame.MAGNIFY) {
-			
+			panel.mouseX = e.getX();
+			panel.mouseY = e.getY();
 		}
 	}
 
