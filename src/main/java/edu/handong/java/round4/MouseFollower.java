@@ -19,8 +19,8 @@ public class MouseFollower extends MouseAdapter implements MouseListener {
 		super.mousePressed(e);
 		
 		if(panel.function == MainFrame.ADDIMAGE) {
-			panel.mouseX = e.getX();
-			panel.mouseY = e.getY();
+			panel.mouseX = e.getX() - 100;
+			panel.mouseY = e.getY() - 100;
 			panel.addImage = null;
 			panel.main.addImage = null;
 			BufferedImage bi= panel.main.loadImage;
@@ -34,8 +34,8 @@ public class MouseFollower extends MouseAdapter implements MouseListener {
 		super.mouseEntered(e);
 		
 		if(panel.function == MainFrame.ADDIMAGE) {
-			panel.mouseX = e.getX();
-			panel.mouseY = e.getY();
+			panel.mouseX = e.getX() - 100;
+			panel.mouseY = e.getY() - 100;
 		}
 	}
 
@@ -44,12 +44,12 @@ public class MouseFollower extends MouseAdapter implements MouseListener {
 		super.mouseMoved(e);
 		
 		if(panel.function == MainFrame.ADDIMAGE) {
-			panel.mouseX = e.getX();
-			panel.mouseY = e.getY();
+			panel.mouseX = e.getX() - 100;
+			panel.mouseY = e.getY() - 100;
 		}
 		else if(panel.function == MainFrame.MAGNIFY) {
-			panel.mouseX = e.getX();
-			panel.mouseY = e.getY();
+			panel.mouseX = e.getX() - 100;
+			panel.mouseY = e.getY() - 100;
 		}
 	}
 

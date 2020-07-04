@@ -200,13 +200,25 @@ public class MainFrame {
 		original.setBounds(9, 359, 97, 47);
 		panel.add(original);
 		
-		JButton save_4 = new JButton("Save");
-		save_4.setBounds(9, 418, 97, 47);
-		panel.add(save_4);
+		JButton edge = new JButton("Edge");
+		edge.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(loadImage==null) return;
+				makeEdge();
+			}
+		});
+		edge.setBounds(9, 418, 97, 47);
+		panel.add(edge);
 		
-		JButton save_4_1 = new JButton("Save");
-		save_4_1.setBounds(9, 477, 97, 47);
-		panel.add(save_4_1);
+		JButton flip = new JButton("Flip");
+		flip.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(loadImage == null) return;
+				flipColor();
+			}
+		});
+		flip.setBounds(9, 477, 97, 47);
+		panel.add(flip);
 		
 		JButton save = new JButton("Save");
 		save.setBounds(9, 536, 97, 47);
@@ -292,7 +304,8 @@ public class MainFrame {
 	public void changeImage(int mouseX, int mouseY) {
 		if(addImage!= null) {
 			Color background = new Color(addImage.getRGB(0, 0));
-			loadImage = new BufferedImage(followImage.getColorModel(), followImage.copyData(null), followImage.isAlphaPremultiplied(), null);
+			loadImage = deepCopy(followImage);
+			
 			for(int y=0; y<loadImage.getHeight(); y++) {
 				for(int x=0; x<loadImage.getWidth(); x++) { // 배경 이미지의 모든 픽셀에서
 					if(x>mouseX && y>mouseY && x<addImage.getWidth()+mouseX && y<addImage.getHeight()+mouseY) { // 추가할 이미지의 모든 픽셀 중에서
@@ -302,7 +315,6 @@ public class MainFrame {
 					}
 				}
 			}
-//			System.out.println(function);
 			imagePanel.setImage(loadImage);
 			
 			// 배경색과 같은 색이라도 이미지 안이면 유지하게 하기....실패ㅠㅠ
@@ -335,10 +347,53 @@ public class MainFrame {
 		}
 	}
 	
-	public void moveMagnifier(int mouseX, int mouseY) {
-		
+	public void flipColor() {
+		for(int y=0; y<loadImage.getHeight(); y++) {
+			for(int x=0; x<loadImage.getWidth(); x++) {
+				Color color = new Color(loadImage.getRGB(x, y));
+				color = new Color(255-color.getRed(), 255-color.getGreen(), 255-color.getBlue());
+				loadImage.setRGB(x, y, color.getRGB());
+			}
+		}
+		imagePanel.setImage(loadImage);
+		followImage = deepCopy(loadImage);
+		imagePanel.repaint();
 	}
 	
+	public BufferedImage deepCopy (BufferedImage origin) {
+		BufferedImage newImage = new BufferedImage(origin.getColorModel(), origin.copyData(null), origin.isAlphaPremultiplied(), null);
+		return newImage;
+	}
+	
+	public void makeEdge() {
+		double[][] filter = {{ 1, 1, 1 }, { 1, -8, 1 }, { 1, 1, 1 }}; //{{ -1, -1, -1 }, { -1, 8, -1 }, { -1, -1, -1 }};
+//			{{4, 0, 0},
+//						  {0, 0, 0},
+//						  {0, 0, -4}};
+		
+		
+		for(int y=0; y<loadImage.getHeight(); y++) {
+			for(int x=0; x<loadImage.getWidth(); x++) {
+				int rgb=0;
+				for(int i=0; i<filter.length; i++) {
+					for(int j=0; j<filter[i].length; j++) {
+						if(x<1 && i<1 || x>loadImage.getHeight()-2 && i>1) continue;
+						if(y<1 && j<1 || y>loadImage.getHeight()-2 && j>1) continue;
+						
+						Color c = new Color(followImage.getRGB(x-1+i, y-1+j));
+						rgb += (c.getRed()+c.getGreen()+c.getBlue())/3.0*filter[i][j];
+					}
+				}
+				rgb = Math.min(255, Math.max(0, rgb)); // 0~255 사이값이 되게 만들기
+				rgb = 255-rgb;
+				loadImage.setRGB(x, y, new Color(rgb, rgb, rgb).getRGB());
+			}
+		}
+		
+		
+		followImage = deepCopy(loadImage);
+		imagePanel.repaint();
+	}
 }
 
 
