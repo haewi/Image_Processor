@@ -40,20 +40,20 @@ class DrawPanel extends JPanel {
 			int newX = x-711;
 			int newY = y-615;
 			if(x > 711 && y > 615) {
-				this.setSize(711+newX, 615+newY);
 				main.frame.setSize(847+newX, 649+newY);
+				this.setSize(711+newX, 615+newY);
 			}
 			else if(x > this.getWidth()) {
-				this.setBounds(130, 6, 711+newX, 615);
 				main.frame.setBounds(0, 10, 847+newX, 649);
+				this.setBounds(130, 6, 711+newX, 615);
 			}
 			else if(y > this.getHeight()) {
-				this.setBounds(130, 6, 711, 615+newY);
 				main.frame.setBounds(0, 10, 847, 649+newY);
+				this.setBounds(130, 6, 711, 615+newY);
 			}
 			else {
-				this.setSize(711, 615);
 				main.frame.setSize(847, 649);
+				this.setSize(711, 615);
 
 			}
 		}

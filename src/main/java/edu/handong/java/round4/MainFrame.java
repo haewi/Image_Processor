@@ -366,11 +366,33 @@ public class MainFrame {
 	}
 	
 	public void makeEdge() {
-		double[][] filter = {{ 1, 1, 1 }, { 1, -8, 1 }, { 1, 1, 1 }}; //{{ -1, -1, -1 }, { -1, 8, -1 }, { -1, -1, -1 }};
+		double[][] fil = {{0.088 , 0.107 , 0.088}, 
+				 		  {0.107 , 0.214 , 0.107},
+				 		  {0.088 , 0.107 , 0.088}}; 
+		double[][] filter = {{ 1, 1, 1 },
+							 { 1, -8, 1 },
+							 { 1, 1, 1 }}; //{{ -1, -1, -1 }, { -1, 8, -1 }, { -1, -1, -1 }};
 //			{{4, 0, 0},
 //						  {0, 0, 0},
 //						  {0, 0, -4}};
 		
+		for(int y=0; y<loadImage.getHeight(); y++) {
+			for(int x=0; x<loadImage.getWidth(); x++) {
+				int rgb=0;
+				for(int i=0; i<fil.length; i++) {
+					for(int j=0; j<fil[i].length; j++) {
+						if(x<1 && i<1 || x>loadImage.getHeight()-2 && i>1) continue;
+						if(y<1 && j<1 || y>loadImage.getHeight()-2 && j>1) continue;
+//						System.out.println(x-1+i);
+						Color c = new Color(followImage.getRGB(x-1+i, y-1+j));
+						rgb += (c.getRed()+c.getGreen()+c.getBlue())/3.0*fil[i][j];
+					}
+				}
+				rgb = Math.min(255, Math.max(0, rgb)); // 0~255 사이값이 되게 만들기
+				rgb = 255-rgb;
+				loadImage.setRGB(x, y, new Color(rgb, rgb, rgb).getRGB());
+			}
+		}
 		
 		for(int y=0; y<loadImage.getHeight(); y++) {
 			for(int x=0; x<loadImage.getWidth(); x++) {
@@ -390,7 +412,7 @@ public class MainFrame {
 			}
 		}
 		
-		
+		imagePanel.setImage(loadImage);
 		followImage = deepCopy(loadImage);
 		imagePanel.repaint();
 	}
